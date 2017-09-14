@@ -1,0 +1,669 @@
+Message: †
+Message: †
+Reply: SW 14998.57cg
+Message: †
+Reply: SW 14998.57cg
+Message: 9:15005.0
+Reply: FW 14998.57ff
+Message: S
+Reply: SW 15005.00ce
+Message: U
+Reply: SD  1311023bc
+Message: U
+Reply: SN  666.261jd
+Message: †
+Reply: SN  666.261jd
+Message: S
+Reply: SN  666.261jd
+Message: 1:15000
+Reply: EE100000kj
+Message: 1
+Reply: 1: 666.483jo
+Message: 2:15010
+Reply: EE100000kj
+Message: 2
+Reply: 2: 666.039ho
+Message: 3:1
+Reply: SN  666.261jd
+Message: 5:1
+Reply: SN  666.261jd
+Message: G
+Reply: TN  666.261kd
+Message: N
+Reply: @N  666.483mc
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: N
+Reply: EE100000kj
+Message: S
+Reply: SN  666.483`e
+Message: U
+Reply: SW 15000.01od
+Message: U
+Reply: SD  1311405fc
+Message: U
+Reply: SN  666.483`e
+Message: U
+Reply: SW 15000.01od
+Message: S
+Reply: SW 15000.01od
+Message: S
+Reply: SW 15000.01od
+Message: S
+Reply: SW 15000.01od
+Message: 1:15015
+Reply: SW 15000.01od
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15000.01od
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15000.01od
+Message: 5:1
+Reply: SW 15000.01od
+Message: G
+Reply: TW 15000.01`e
+Message: N
+Reply: @W 15015.01bd
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15019.01fd
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15024.01bd
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15019.99ge
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15024.99ce
+Message: S
+Reply: SW 15024.99ff
+Message: †
+Reply: SW 15024.99ff
+Message: S
+Reply: SW 15024.99ff
+Message: 1:15015
+Reply: SW 15024.99ff
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15024.99ff
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15024.99ff
+Message: 5:1
+Reply: SW 15024.99ff
+Message: G
+Reply: TW 15024.99gf
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15019.99ge
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15024.99ce
+Message: S
+Reply: SW 15024.99ff
+Message: †
+Reply: SW 15024.99ff
+Message: S
+Reply: SW 15024.99ff
+Message: 1:15015
+Reply: SW 15024.99ff
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15024.99ff
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15024.99ff
+Message: 5:1
+Reply: SW 15024.99ff
+Message: G
+Reply: TW 15024.99gf
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: †
+Reply: @W 15022.00oc
+Message: S
+Reply: @W 15022.00oc
+Message: 1:15015
+Reply: SW 15022.00be
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15022.00be
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15022.00be
+Message: 5:1
+Reply: SW 15022.00be
+Message: G
+Reply: TW 15022.00ce
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15019.01fd
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: S
+Reply: @W 15018.99fe
+Message: N
+Reply: EE100000kj
+Message: †
+Reply: SW 15018.99if
+Message: S
+Reply: SW 15018.99if
+Message: 1:15015
+Reply: SW 15018.99if
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15018.99if
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15018.99if
+Message: 5:1
+Reply: SW 15018.99if
+Message: G
+Reply: TW 15018.99jf
+Message: N
+Reply: @W 15015.01bd
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15019.01fd
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15024.01bd
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15015.01bd
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15020.00mc
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15025.00bd
+Message: S
+Reply: SW 15025.00ee
+Message: †
+Reply: SW 15025.00ee
+Message: S
+Reply: SW 15025.00ee
+Message: 1:15015
+Reply: SW 15025.00ee
+Message: 1
+Reply: 1:15015.00eo
+Message: 2:15025
+Reply: SW 15025.00ee
+Message: 2
+Reply: 2:15025.00go
+Message: 3:1
+Reply: SW 15025.00ee
+Message: 5:1
+Reply: SW 15025.00ee
+Message: G
+Reply: TW 15025.00fe
+Message: N
+Reply: @W 15014.99be
+Message: N
+Reply: @W 15016.00bd
+Message: N
+Reply: @W 15017.00cd
+Message: N
+Reply: @W 15018.00dd
+Message: N
+Reply: @W 15018.99fe
+Message: N
+Reply: @W 15019.99ge
+Message: N
+Reply: @W 15021.00nc
+Message: N
+Reply: @W 15022.00oc
+Message: N
+Reply: @W 15023.00`d
+Message: N
+Reply: @W 15023.99be
+Message: N
+Reply: @W 15024.99ce
+Message: S
+Reply: SW 15024.99ff

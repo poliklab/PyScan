@@ -1,0 +1,108 @@
+\documentclass[11pt]{article}
+
+\marginparwidth 0.5in 
+\oddsidemargin .25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin .25in 
+\textwidth 6in \textheight 8 in
+
+\usepackage{titling}
+
+\setlength{\droptitle}{-10em} 
+\usepackage{amsmath}
+\usepackage{upgreek}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\lstset{language=Python}
+
+\newcommand\floor[1]{\lfloor#1\rfloor}
+\newcommand\ceil[1]{\lceil#1\rceil}
+\def\code#1{\texttt{#1}}
+
+\begin{document}
+\author{Peter Timperman}
+\title{PyScan Manual}
+\maketitle
+\section{Introduction}
+    PyScan is a program to control the HD-300 dye laser and quire from a Measurement Computing PCI-DAS1002 data acquisition card. 
+    PyScan is divided into seven files: \texttt{model.py}, \texttt{debug.py}, \texttt{controller.py}, \texttt{board.py}, \texttt{session.py}, \texttt{commands.py}, and \texttt{view.py}. There is also an \texttt{\textunderscore\textunderscore init.py\textunderscore\textunderscore} file is used to simplify imports. The programs architecture follows the Model-View-Controller structure. 
+    
+    To run PyScan, navigate to its local directory and run \texttt{python controller.py} from the command line.
+    
+\section{Important Modules}
+\subsection{PyUniversalLibrary}
+Measurement Computing provides the Universal Library for  C, C#, and Visual Basic that interfaces with their data acquisition hardware. PyScan uses PyUniversalLibrary, a Python wrapper for the Universal Library's C implementation. PyUniversalLibrary only works in Python 2. Source code, documentation, and installation instructions are available at https://github.com/astraw/PyUniversalLibrary. Documentation for the Universal Library is available at http://www.mccdaq.com/PDFs/manuals/Universal-Library-Help.pdf. \subsection{PySerial}
+Serial communication in Windows XP are controlled by Win32 binaries. The PySerial module interfaces with these binaries. The most current version of PySerial, 3.3, does not work with Python 2 so PySerial 2.7 must be used. 
+\\ Documentation is available at https://pythonhosted.org/pyserial/.
+\subsection{Tkinter}
+Tkinter is Python's default user interface module. It is used to implement all of PyScan's GUI. Helpful tutorials and guides are available at http://effbot.org/tkinterbook/tkinter-index.htm.  
+\section{Model}
+The model is intended to  represent the logic and attributes of data acquisition and the scanning unit and is defined in \texttt{board.py} and \texttt{model.py}
+\subsection{\texttt{board.py}}
+The data acquisition card board be initially configured with Measurement Computing's InstaCal software.
+\texttt{board.py} implements logic for reading the data acquisition hard using the PyUniversalLibrary module. The Universal Library method \texttt{cbAIn(board, channel, gain)} reads a analog voltage and coverts it to a unsigned 12 bit integer. This integer is then converted to a voltage with \texttt{cbToEngUnits(board, gain, dataValue)}. Gain is controlled by integer codes defined in the Universal Library. 
+\begin{table}[]
+\centering
+\caption{Gain Codes}
+\label{my-label}
+\begin{tabular}{|l|l|}
+\hline
+Gain  & Code \\ \hline
+\pm 5 V    & 0    \\ \hline
+\pm 10 V   & 1    \\ \hline
+\pm 0-10 V & 100  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{\texttt{model.py}}
+The \texttt{model.py} consists of two classes: SerialInterface and Scanner.
+\subsubsection{Serial Interface}
+The Serial Interface implements the low level serial communication logic. The instrument using a complex protocol to receive commands and send responses. The instrument will only receive a command after it sends a an \code{<ENQ>}. After an \code{<ENQ>} is received a message can be written to the instrument. After command is written, the serial port is read from and received characters are buffered.
+Each command must have a check sum computed and appended to the command. The algorithm for computing the check sum is defined both in instruments manual and PCScan38.
+The buffered message is parsed into status and current position. 
+\subsubsection{Scanner}
+The Scanner class implements the specific commands defined in the instrument's manual. The commands implemented are:
+\begin{enumerate}
+    \item \texttt{Scan}
+    \item \texttt{Slew}
+    \item \texttt{JogReverse}
+    \item \texttt{JogForward}
+    \item \texttt{Stop}
+    \item \texttt{Pause}
+    \item \texttt{ACK}
+\end{enumerate}
+Scanner uses an instance of the Serial Interface class to write the specific commands.
+The instruments position boundaries are hard-coded as class attributes.  \texttt{monitorBounds()} uses a separate thread if the instrument is within bounds while slewing or jogging. 
+The current position is rounded so that position recorded by the program reflects the instrument's control panel. 
+\section{View}
+The view implements all of the GUI components using Tkinter. The main frames defined are:
+\begin{enumerate}
+    \item Start Menu
+    \item Main Menu
+    \item Scan Menu
+    \item Configure Menu
+    \item Control Menu
+\end{enumerate}
+Other special frames used are:
+\begin{enumerate}
+    \item Entry Box: Used to record input from the user 
+    \item Scan Start Box: Asks users permission to start plot 
+    \item Reading Window: Parent frame for the plot 
+    \item Scan Plot: Displays the plot  
+\end{enumerate}
+\section{Controller}
+The controller uses two files: \texttt{session.py} and \texttt{controller.py}.
+\subsection{\texttt{session.py}}
+The session class is helper class that buffers position and acquired data. It can also format, save, and print buffered data.
+\subsection{\texttt{controller.py}}
+The controller class is the most complex potion of the entire program. It binds the view's button and controls with the models functions and logic. It  controls window and view management, saving and loading settings, and plotting the data. It also defines a dictionary used to manage keyboard bindings. 
+The scanning logic is the most critical component of the program. The Scanner manipulates the laser's position and steps from based on predetermined parameters: start position, and end position, and position increment. The Session class buffers the data which is based to the ScanPlot frame and plotted.                                                                                                                                                              
+\section{Misc.}
+\subsection{\texttt{commands.py}}
+This is helper file that binds the command codes such as \texttt{ENQ} or \texttt{NUll} to their respective ASCII integer codes.
+\subsection{\texttt{debug.py}}
+This is a helper class that logs messages to and from the program and instruments in a file called \texttt{scan\textunderscore config.set} . It can be enabled by calling the program with an \texttt{--debug} argument from the command line.
+\end{document}
