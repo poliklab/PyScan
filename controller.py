@@ -128,12 +128,12 @@ class PCScanController(tk.Tk):
         self.bindScanMenu()
         self.showFrame("MainMenu")
     #--------------Control Menu-----------------------------------------------
+
     def updatePositionLabel(self):
         while getattr(self.posThread, "pos_run", True):
             self.frames["ControlMenu"].posTxt.configure(
-            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
-            self.frame["ScanMenu"].posTxt.configure(
-            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+                text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+            
     def bindControlMenu(self):
         self.frames["ControlMenu"].unitBut.configure(
             command=self.changeUnits)
@@ -156,6 +156,7 @@ class PCScanController(tk.Tk):
         self.frames["ControlMenu"].back.configure(
             command=lambda: self.showFrame("MainMenu"))
 
+
     def disableControlButtons(self):
         for button in self.controlEnableList:
             button.config(state="disabled")
@@ -170,32 +171,33 @@ class PCScanController(tk.Tk):
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
     def jogForward(self):
-        self.posThread = threading.Thread(target = self.updatePositionLabel)
-        self.posThread.start()
+        
+        self.posThread = threading.Thread(target= lambda: self.updatePositionLabel())
         self.disableControlButtons()
         self.scanUnit.jogForward()
-        
+        self.posThread.start()
 
     def jogReverse(self):
+        self.posThread = threading.Thread(target= lambda: self.updatePositionLabel())
         self.disableControlButtons()
         self.scanUnit.jogReverse()
-        self.frames["ControlMenu"].posTxt.configure(
-            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+        self.posThread.start()
     # Bind setters to configure menu
 
     def stop(self):
-
+        self.scanUnit.stop()
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
             self.scanThread.scan_run = False
         if hasattr(self, "posThread") and self.posThread is not None:
             print "Stopping thread"
-            self.posThread.pos_run = False    
+            self.posThread.pos_run = False
+
         
-        self.enableControlButtons()
-        self.scanUnit.stop()
+        
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+        self.enableControlButtons()
 
     def slew(self):
         self.disableControlButtons()
@@ -397,7 +399,7 @@ class PCScanController(tk.Tk):
             command=lambda: [self.updateConfigScanFromDialog(dialogWindow, "stopPos",  self.frames["ConfigureMenu"].stopPosTxt, self.frames["ScanMenu"].stopPosTxt, self.scanUnit.currentUnits), self.calculateScanTime()])
 
     def setScanInc(self):
-        # Heleper function to update the models increment 
+        # Heleper function to update the models increment
         def updateScannerInterval():
             self.scanUnit.interval = float(self.scanInc)
         dialogWindow = EntryBox("Set scan increment")
@@ -405,7 +407,6 @@ class PCScanController(tk.Tk):
             dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime(), updateScannerInterval()])
         dialogWindow.yesButton.configure(
             command=lambda: [self.updateConfigScanFromDialog(dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime(), updateScannerInterval()])
-        
 
     def setDelay(self):
         dialogWindow = EntryBox("Set delay")
