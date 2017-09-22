@@ -67,17 +67,18 @@ class SerialInterface (object):
         self.units = reply[1]
         # Rest of the message with out the checksum
         self.digits = float(str.strip(reply[2:-2]))
+        # print "Reply: " + str(self.digits)
 
 
 class Scanner(object):
 
-    def __init__(self):
+    def __init__(self, interval):
         self.floor = 14975
         self.ceiling = 16000
-        self.interval = .1
+        self.interval = interval
         self.serialInterface = SerialInterface()
         self.ack()
-        self.currentPosition = float(self.serialInterface.digits)
+        self.currentPosition = self.serialInterface.digits
         self.currentUnits = self.serialInterface.units
         if self.currentUnits == "D":  # Skip the degree units
             self.changeUnits()
@@ -168,7 +169,7 @@ class Scanner(object):
         if direction == "Forward":
             while getattr(self.t, "check_in_bounds", True):
                 self.ack()
-                print self.currentPosition
+                print "Forward: " + str(self.currentPosition)
                 if self.currentPosition >= self.ceiling:
                     self.stop()
                     print "Cannot jog out of bounds",   self.currentPosition
@@ -225,8 +226,8 @@ class Scanner(object):
         self.ceiling = ceiling
 
     def roundPosition(self, pos):
-        # print "Interval", self.interval
+        print "Interval", self.interval
         rounded = round(pos / self.interval, 0) * self.interval
-        # print "Before", pos
-        # print "Rounded", rounded
+        print "Before", pos
+        print "Rounded", rounded
         return rounded

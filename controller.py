@@ -77,7 +77,7 @@ class PCScanController(tk.Tk):
         self.controlEnableList.append(self.frames["ControlMenu"].slewBut)
         self.controlEnableList.append(self.frames["ControlMenu"].unitBut)
         self.controlEnableList.append(self.frames["ControlMenu"].calibrateBut)
-        self.saveFlag = 0 
+        self.saveFlag = 0
         self.scanUnit = None
         self.pauseThread = False
         self.dataView = None
@@ -114,11 +114,9 @@ class PCScanController(tk.Tk):
 
     def yesLaser(self):
 
-        self.scanUnit = Scanner()
-
         self.readSettings()
+        self.scanUnit = Scanner(float(self.scanInc))
 
-        self.scanUnit.interval = float(self.scanInc)
         self.frames["ControlMenu"] .posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
         self.frames["ScanMenu"].posTxt.configure(
@@ -130,7 +128,12 @@ class PCScanController(tk.Tk):
         self.bindScanMenu()
         self.showFrame("MainMenu")
     #--------------Control Menu-----------------------------------------------
-
+    def updatePositionLabel(self):
+        while getattr(self.posThread, "pos_run", True):
+            self.frames["ControlMenu"].posTxt.configure(
+            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+            self.frame["ScanMenu"].posTxt.configure(
+            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
     def bindControlMenu(self):
         self.frames["ControlMenu"].unitBut.configure(
             command=self.changeUnits)
@@ -167,10 +170,11 @@ class PCScanController(tk.Tk):
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
     def jogForward(self):
+        self.posThread = threading.Thread(target = self.updatePositionLabel)
+        self.posThread.start()
         self.disableControlButtons()
         self.scanUnit.jogForward()
-        self.frames["ControlMenu"].posTxt.configure(
-            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+        
 
     def jogReverse(self):
         self.disableControlButtons()
@@ -184,7 +188,10 @@ class PCScanController(tk.Tk):
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
             self.scanThread.scan_run = False
-
+        if hasattr(self, "posThread") and self.posThread is not None:
+            print "Stopping thread"
+            self.posThread.pos_run = False    
+        
         self.enableControlButtons()
         self.scanUnit.stop()
         self.frames["ControlMenu"].posTxt.configure(
@@ -291,7 +298,7 @@ class PCScanController(tk.Tk):
 
     def save(self):
         if self.saveFlag == 1:
-        
+
             self.fileName = tkFileDialog.asksaveasfilename(
                 initialdir="/", title="Select save file or cancel.", filetypes=((".csv files", "*.csv"), ("all files", "*.*")))
             if self.fileName is not None:
@@ -299,7 +306,7 @@ class PCScanController(tk.Tk):
                     self.fileName, self.scanUnit.currentUnits)
             # TODO: log file save
         else:
-            pass 
+            pass
 
     def next(self):
 
@@ -390,14 +397,15 @@ class PCScanController(tk.Tk):
             command=lambda: [self.updateConfigScanFromDialog(dialogWindow, "stopPos",  self.frames["ConfigureMenu"].stopPosTxt, self.frames["ScanMenu"].stopPosTxt, self.scanUnit.currentUnits), self.calculateScanTime()])
 
     def setScanInc(self):
-
+        # Heleper function to update the models increment 
+        def updateScannerInterval():
+            self.scanUnit.interval = float(self.scanInc)
         dialogWindow = EntryBox("Set scan increment")
         dialogWindow.bind("<Return>", lambda r: [self.updateConfigScanFromDialog(
-            dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime()])
+            dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime(), updateScannerInterval()])
         dialogWindow.yesButton.configure(
-            command=lambda: [self.updateConfigScanFromDialog(dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime()])
-        # the model needs to know the inc to correctly round positons
-        self.scanUnit.interval = float(self.scanInc)
+            command=lambda: [self.updateConfigScanFromDialog(dialogWindow, "scanInc",  self.frames["ConfigureMenu"].scanIncTxt,  self.frames["ScanMenu"].scanIncTxt), self.calculateScanTime(), updateScannerInterval()])
+        
 
     def setDelay(self):
         dialogWindow = EntryBox("Set delay")
@@ -477,7 +485,8 @@ class PCScanController(tk.Tk):
             for line in config_file.readlines():
                 varName, value = line.split(",")
                 setattr(self, varName, str.strip(value))
-                print "reading lines"
+                print "Setting: " + varName + " = " + str.strip(value)
+                # print "reading lines"
 
     def _quit(self):
         # Dont save settigns if there is no scan unit implemented
