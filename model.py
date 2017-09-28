@@ -111,48 +111,16 @@ class Scanner(object):
     def jogForward(self):
 
         if self.currentUnits == "W":
-            if self.currentPosition < self.ceiling:
-                self.serialInterface.execute("R")
-                self.t = threading.Thread(
-                    target=lambda: self.monitorBounds("Forward"))
-                self.t.start()
-
-            else:
-                print "Cannot jog out of bounds"
-                return
+            self.serialInterface.execute("R")
         if self.currentUnits == "N":
-            if self.currentPosition < self.ceiling:
-                self.serialInterface.execute("F")
-                self.t = threading.Thread(
-                    target=lambda: self.monitorBounds("Forward "))
-                self.t.start()
-
-            else:
-                print "Cannot jog out of bounds"
-                return
+            self.serialInterface.execute("F")
 
     def jogReverse(self):
 
         if self.currentUnits == "W":
-            if self.currentPosition > self.floor:
-                self.serialInterface.execute("F")
-                self.t = threading.Thread(
-                    target=lambda: self.monitorBounds("Reverse"))
-                self.t.start()
-
-            else:
-                print "Cannot jog out of bounds"
-                return
+            self.serialInterface.execute("F")
         if self.currentUnits == "N":
-            if self.currentPosition > self.floor:
-                self.serialInterface.execute("R")
-                self.t = threading.Thread(
-                    target=lambda: self.monitorBounds("Reverse"))
-                self.t.start()
-
-            else:
-                print "Cannot jog out of bounds"
-                return
+            self.serialInterface.execute("R")
 
     def updateStatus(self):
         self.currentPosition = self.roundPosition(
@@ -164,26 +132,6 @@ class Scanner(object):
         self.updateStatus()
         if self.t is not None:
             self.t.check_in_bounds = False
-
-    def monitorBounds(self, direction):
-        if direction == "Forward":
-            while getattr(self.t, "check_in_bounds", True):
-                self.ack()
-                print "Forward: " + str(self.currentPosition)
-                if self.currentPosition >= self.ceiling:
-                    self.stop()
-                    print "Cannot jog out of bounds",   self.currentPosition
-                    self.t.check_in_bounds = False
-                time.sleep(.5)
-        elif direction == "Reverse":
-            while getattr(self.t, "check_in_bounds", True):
-                self.ack()
-                print self.currentPosition
-                if self.currentPosition <= self.floor:
-                    self.stop()
-                    print "Cannot jog out of bounds",   self.currentPosition
-                    self.t.check_in_bounds = False
-                time.sleep(.5)
 
     def setUpScan(self, startPos, stopPos, increment):
         self.stop()

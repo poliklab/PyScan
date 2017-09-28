@@ -81,6 +81,9 @@ class PCScanController(tk.Tk):
         self.scanUnit = None
         self.pauseThread = False
         self.dataView = None
+
+        self.floor = 15000
+        self.ceiling = 15100
     """
     Args:
         page: frame to be disaplayed  
@@ -127,13 +130,32 @@ class PCScanController(tk.Tk):
         self.bindConfigureMenu()
         self.bindScanMenu()
         self.showFrame("MainMenu")
-    #--------------Control Menu-----------------------------------------------
+
+    #-----------------General Model Control Methods---------------------------
+    def movePosition(self, direction):
+        while getattr(self.moveThread, "move_run", True):
+            self.scanUnit.ack()
+            self.updatePositionLabel()
+            self.monitorBounds(direction)
+            time.sleep(.1)
 
     def updatePositionLabel(self):
-        while getattr(self.posThread, "pos_run", True):
-            self.frames["ControlMenu"].posTxt.configure(
-                text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
-            
+        print "updated label: ", str(self.scanUnit.currentPosition)
+        self.frames["ControlMenu"].posTxt.configure(
+            text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+
+    def monitorBounds(self,  direction):
+        position = self.scanUnit.currentPosition
+        if direction == "Forward":
+            if position >= self.ceiling:
+                print "Instrument ceiling exceeded"
+                self.stop()
+        elif direction == "Reverse":
+            if position <= self.floor:
+                print "Instrument floor exceeded"
+                self.stop()
+
+    #--------------Control Menu-----------------------------------------------
     def bindControlMenu(self):
         self.frames["ControlMenu"].unitBut.configure(
             command=self.changeUnits)
@@ -156,7 +178,6 @@ class PCScanController(tk.Tk):
         self.frames["ControlMenu"].back.configure(
             command=lambda: self.showFrame("MainMenu"))
 
-
     def disableControlButtons(self):
         for button in self.controlEnableList:
             button.config(state="disabled")
@@ -171,30 +192,31 @@ class PCScanController(tk.Tk):
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
     def jogForward(self):
-        
-        self.posThread = threading.Thread(target= lambda: self.updatePositionLabel())
+
+        self.moveThread = threading.Thread(
+            target=lambda: self.movePosition("Forward"))
         self.disableControlButtons()
         self.scanUnit.jogForward()
-        self.posThread.start()
+        self.moveThread.start()
 
     def jogReverse(self):
-        self.posThread = threading.Thread(target= lambda: self.updatePositionLabel())
+        self.moveThread = threading.Thread(
+            target=lambda: self.movePosition("Reverse"))
         self.disableControlButtons()
         self.scanUnit.jogReverse()
-        self.posThread.start()
+        self.moveThread.start()
     # Bind setters to configure menu
 
     def stop(self):
         self.scanUnit.stop()
+
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
             self.scanThread.scan_run = False
-        if hasattr(self, "posThread") and self.posThread is not None:
+        if hasattr(self, "moveThread") and self.moveThread is not None:
             print "Stopping thread"
-            self.posThread.pos_run = False
-
-        
-        
+            self.moveThread.move_run = False
+        self.scanUnit.ack()   
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
         self.enableControlButtons()
