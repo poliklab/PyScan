@@ -140,7 +140,7 @@ class PCScanController(tk.Tk):
             time.sleep(.1)
 
     def updatePositionLabel(self):
-        print "updated label: ", str(self.scanUnit.currentPosition)
+        # print "updated label: ", str(self.scanUnit.currentPosition)
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
@@ -192,11 +192,11 @@ class PCScanController(tk.Tk):
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
     def jogForward(self):
-
+        # self.monitorBounds("Forward")
+        self.scanUnit.jogForward()
         self.moveThread = threading.Thread(
             target=lambda: self.movePosition("Forward"))
         self.disableControlButtons()
-        self.scanUnit.jogForward()
         self.moveThread.start()
 
     def jogReverse(self):
@@ -208,7 +208,7 @@ class PCScanController(tk.Tk):
     # Bind setters to configure menu
 
     def stop(self):
-        self.scanUnit.stop()
+        
 
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
@@ -216,6 +216,7 @@ class PCScanController(tk.Tk):
         if hasattr(self, "moveThread") and self.moveThread is not None:
             print "Stopping thread"
             self.moveThread.move_run = False
+        self.scanUnit.stop()    
         self.scanUnit.ack()   
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)

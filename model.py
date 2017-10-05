@@ -53,10 +53,11 @@ class SerialInterface (object):
             # Ignore response if it is a NULL or ENQ
             if recieved != ProtcolMessage.NULL.value and recieved != ProtcolMessage.ENQ.value:
                 if recieved == chr(13):  # Carriage return. Has to be ASCII 13
-                    if self.debug == True:
-                        DebugLogger.logReply(reply)
-                    # print reply
+                    #if self.debug == True:
+                    #    DebugLogger.logReply(reply)
+                    print reply
                     self.lastResponse = reply
+                    print message
                     self.parseReply(reply)
                     break
                 reply += recieved
@@ -66,7 +67,10 @@ class SerialInterface (object):
         self.status = reply[0]  # First index is a status message
         self.units = reply[1]
         # Rest of the message with out the checksum
+        #try:
         self.digits = float(str.strip(reply[2:-2]))
+        #except ValueError:
+        #    print "Error Reply:" + reply.replace(" ", "")
         # print "Reply: " + str(self.digits)
 
 
@@ -174,8 +178,9 @@ class Scanner(object):
         self.ceiling = ceiling
 
     def roundPosition(self, pos):
-        print "Interval", self.interval
+        # print "Interval", self.interval
         rounded = round(pos / self.interval, 0) * self.interval
-        print "Before", pos
-        print "Rounded", rounded
+        
+        # print "Before", pos
+        # print "Rounded", rounded
         return rounded
