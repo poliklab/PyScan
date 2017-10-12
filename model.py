@@ -1,15 +1,12 @@
 import serial
 from commands import ProtcolMessage
-import threading
 import time
-import argparse
-from debug import DebugLogger
+
 
 
 class SerialInterface (object):
 
     def __init__(self):
-        self.debug = DebugLogger.setDebug()
         self.device = serial.Serial(
             port="COM2", baudrate=9600, bytesize=serial.EIGHTBITS, stopbits=2)
         self.lastResponse = ""
@@ -22,39 +19,30 @@ class SerialInterface (object):
         return chr((cksm & 15) + 96) + chr((int(cksm / 16) & 15) + 96)
 
     def execute(self, message):
-        # print message
         message = str(message)
         reply = ""
         enqCounter = 0
         replyCounter = 0
-        self.device.flushInput()
+        self.device.flushInput()  # Flush input buffer to pervent overflow
         reply = ""
         while enqCounter < 450:  # Quit after reading 450 nulls or about 10 cycles
             recieved = self.device.read()
 
             if recieved == ProtcolMessage.ENQ.value:
                 # Write our message!
-
                 if message == ProtcolMessage.ACK.value:
-                    DebugLogger.logMessage(message)
                     self.device.write(message)
                 else:
                     final = message + \
                         self.computeCheckSum(message) + ProtcolMessage.CR.value
-                    if self.debug == True:
-                        DebugLogger.logMessage(message)
                     self.device.write(final)
-
                 break  # Move on to waiting the reply
             enqCounter += 1
         while replyCounter < 1200:  # Quit after reading 1200 characters with out a valid response
             recieved = self.device.read()
-
             # Ignore response if it is a NULL or ENQ
             if recieved != ProtcolMessage.NULL.value and recieved != ProtcolMessage.ENQ.value:
                 if recieved == chr(13):  # Carriage return. Has to be ASCII 13
-                    #if self.debug == True:
-                    #    DebugLogger.logReply(reply)
                     print reply
                     self.lastResponse = reply
                     print message
@@ -65,31 +53,29 @@ class SerialInterface (object):
 
     def parseReply(self, reply):
         self.status = reply[0]  # First index is a status message
-        self.units = reply[1]
-        # Rest of the message with out the checksum
-        #try:
+        self.units = reply[1]   # Second index is the current units
+        # Rest of the message
+        # Last two indexes are the checkum which is igored
         self.digits = float(str.strip(reply[2:-2]))
-        #except ValueError:
-        #    print "Error Reply:" + reply.replace(" ", "")
-        # print "Reply: " + str(self.digits)
 
 
 class Scanner(object):
 
     def __init__(self, interval):
-        self.floor = 14975
+        # TODO: Set floor and ceiling in a setting file
+        self.floor = 14975 
         self.ceiling = 16000
         self.interval = interval
         self.serialInterface = SerialInterface()
-        self.ack()
+        self.ack() # Get info from instument to intailize Scanner object 
         self.currentPosition = self.serialInterface.digits
         self.currentUnits = self.serialInterface.units
         if self.currentUnits == "D":  # Skip the degree units
             self.changeUnits()
         elif self.currentUnits == "N":
             self.flipBounds()
-        self.t = None
-
+    
+    # TODO: Rewrite to remove return statements      
     def slew(self, position):
 
         if position == self.currentPosition:
@@ -134,30 +120,28 @@ class Scanner(object):
     def stop(self):
         self.serialInterface.execute("S")
         self.updateStatus()
-        if self.t is not None:
-            self.t.check_in_bounds = False
+        
 
     def setUpScan(self, startPos, stopPos, increment):
         self.stop()
-        # self.stop()
-        # self.serialInterface.exec  ute("1:15000")
         self.serialInterface.execute("1:" + startPos)
         self.serialInterface.execute("1")
+
         print self.serialInterface.lastResponse
+        
         self.serialInterface.execute("2:" + stopPos)
         self.serialInterface.execute("2")
+        
         print self.serialInterface.lastResponse
+
         self.serialInterface.execute("3:" + increment)
-        # print self.serialInterface.lastResponse
-        # self.serialInterface.execute("4:19.86")
-        # print self.serialInterface.lastResponse
         self.serialInterface.execute("5:1")
+        
         print self.serialInterface.lastResponse
-        # self.serialInterface.execute("6:.0")
-        # print self.serialInterface.lastResponse
+        
         self.serialInterface.execute("G")
         time.sleep(1)
-        # print self.serialInterface.lastResponse
+        
 
     def scan(self):
         self.serialInterface.execute("N")
@@ -180,7 +164,7 @@ class Scanner(object):
     def roundPosition(self, pos):
         # print "Interval", self.interval
         rounded = round(pos / self.interval, 0) * self.interval
-        
+
         # print "Before", pos
         # print "Rounded", rounded
         return rounded
