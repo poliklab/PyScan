@@ -192,6 +192,10 @@ class PCScanController(tk.Tk):
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
 
     def jogForward(self):
+        if hasattr(self, "scanThread") and self.scanThread is not None:
+            print "Stopping thread"
+            self.scanThread.scan_run = False
+            self.scanUnit.stop() 
         # self.monitorBounds("Forward")
         self.scanUnit.jogForward()
         self.moveThread = threading.Thread(
@@ -200,6 +204,10 @@ class PCScanController(tk.Tk):
         self.moveThread.start()
 
     def jogReverse(self):
+        if hasattr(self, "scanThread") and self.scanThread is not None:
+            print "Stopping thread"
+            self.scanThread.scan_run = False
+            self.scanUnit.stop() 
         self.moveThread = threading.Thread(
             target=lambda: self.movePosition("Reverse"))
         self.disableControlButtons()
