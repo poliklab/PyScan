@@ -60,13 +60,7 @@ class PCScanController(tk.Tk):
         self.scanKeys.update({self.frames["ScanMenu"].resumeBut: "<r>"})
         self.scanKeys.update({self.frames["ScanMenu"].saveBut: "<t>"})
 
-        self.configKeys.update(
-            {self.frames["ConfigureMenu"].scanIncBut: "<i>"})
-        self.configKeys.update({self.frames["ConfigureMenu"].delayBut: "<d>"})
-        self.configKeys.update(
-            {self.frames["ConfigureMenu"].stopPosBut: "<t>"})
-        self.configKeys.update(
-            {self.frames["ConfigureMenu"].startPosBut: "<f>"})
+        # Maps functions to a tuple of key and button
 
         self.configKeys.update(
             {self.frames["ConfigureMenu"].channelBut: "<n>"})
@@ -112,6 +106,7 @@ class PCScanController(tk.Tk):
     """
         Only implement frames that dont require using the laser
     """
+
     def noLaser(self):
         self.frames["MainMenu"].setUp.configure(state="disabled")
         self.frames["MainMenu"].control.configure(state="disabled")
@@ -122,6 +117,7 @@ class PCScanController(tk.Tk):
         Creates Scanner object
         Binds menus and keyboard listeners
     """
+
     def yesLaser(self):
 
         self.readSettings()
@@ -139,11 +135,12 @@ class PCScanController(tk.Tk):
         self.showFrame("MainMenu")
 
     #-----------------General Model Control Methods---------------------------
-   """
+    """
     Args: 
         direction: either "forward" or "reverse" 
-    Ack instrument continually while jogging or slewing and update postion
+        Ack instrument continually while jogging or slewing and update postion
    """
+
     def movePosition(self, direction):
         while getattr(self.moveThread, "move_run", True):
             self.scanUnit.ack()
@@ -154,11 +151,11 @@ class PCScanController(tk.Tk):
         Updaye the postion label.
         Used both in the scan and control menu 
     """
+
     def updatePositionLabel(self):
         # print "updated label: ", str(self.scanUnit.currentPosition)
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
-
 
     """
     Args: 
@@ -167,6 +164,7 @@ class PCScanController(tk.Tk):
     ToDo:
         Postion bounds read in from config file
     """
+
     def monitorBounds(self,  direction):
         position = self.scanUnit.currentPosition
         if direction == "Forward":
@@ -180,6 +178,25 @@ class PCScanController(tk.Tk):
 
     #--------------Control Menu-----------------------------------------------
     def bindControlMenu(self):
+        """
+        self.controlKeys = dict()
+        self.controlKeys.update(
+            {(self.frames["ControlMenu"].jogContinFBut: "<f>")})
+        self.controlKeys.update(
+            {self.frames["ControlMenu"].jogContinRBut: "<r>"})
+        self.controlKeys.update({self.frames["ControlMenu"].unitBut: "<u>"})
+        self.controlKeys.update({self.frames["ControlMenu"].slewBut: "<l>"})
+        self.controlKeys.update(
+            {self.frames["ControlMenu"].calibrateBut: "<c>"})
+        self.controlKeys.update({self.frames["ControlMenu"].stopBut: "<s>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].scanIncBut: "<i>"})
+        self.configKeys.update({self.frames["ConfigureMenu"].delayBut: "<d>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].stopPosBut: "<t>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].startPosBut: "<f>"})
+        """
         self.frames["ControlMenu"].unitBut.configure(
             command=self.changeUnits)
         self.frames["ControlMenu"].bind(
@@ -207,11 +224,13 @@ class PCScanController(tk.Tk):
 
     def enableControlButtons(self):
         for button in self.controlEnableList:
+
             button.config(state="normal")
     """
         Switch instrument units: wavelength or wavenumbers
         Logic contained in the model
     """
+
     def changeUnits(self):
         self.scanUnit.changeUnits()
         self.frames["ControlMenu"].posTxt.configure(
@@ -224,11 +243,12 @@ class PCScanController(tk.Tk):
         For jogForward and jod Reverse its very important that only one thread is 
         commincateing to the serial prt 
     """
+
     def jogForward(self):
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
             self.scanThread.scan_run = False
-            self.scanUnit.stop() 
+            self.scanUnit.stop()
         # self.monitorBounds("Forward")
         self.scanUnit.jogForward()
         self.moveThread = threading.Thread(
@@ -236,18 +256,18 @@ class PCScanController(tk.Tk):
         self.disableControlButtons()
         self.moveThread.start()
 
-
     """
        Kill old thread if one exists 
        Start a new thread and update the postion and check the bounds 
        Write to insturment using model 
        Kill thread when bounds met or move stopped
    """
+
     def jogReverse(self):
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
             self.scanThread.scan_run = False
-            self.scanUnit.stop() 
+            self.scanUnit.stop()
         self.moveThread = threading.Thread(
             target=lambda: self.movePosition("Reverse"))
         self.disableControlButtons()
@@ -258,8 +278,8 @@ class PCScanController(tk.Tk):
         Gerneic all stop for slewing, jogging, and scanning.
         Kills all threads, updates gui, and re-enables user control 
     """
+
     def stop(self):
-        
 
         if hasattr(self, "scanThread") and self.scanThread is not None:
             print "Stopping thread"
@@ -267,8 +287,8 @@ class PCScanController(tk.Tk):
         if hasattr(self, "moveThread") and self.moveThread is not None:
             print "Stopping thread"
             self.moveThread.move_run = False
-        self.scanUnit.stop()    
-        self.scanUnit.ack()   
+        self.scanUnit.stop()
+        self.scanUnit.ack()
         self.frames["ControlMenu"].posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
         self.enableControlButtons()
@@ -279,6 +299,7 @@ class PCScanController(tk.Tk):
         Kills dialog box when finsihed 
     TODO: Input validation for slew postion 
     """
+
     def slew(self):
         self.disableControlButtons()
         dialogWindow = EntryBox("Slew to:")
@@ -321,13 +342,14 @@ class PCScanController(tk.Tk):
         Write intial scan options to intsument using the modle 
         
     """
+
     def scanStart(self):
 
         if self.dataView is not None:
             self.dataView.destroy()
         self.session = Session(0, int(self.channels),
                                self.gainDict[self.gain][0])
-        self.dataView = ReadingWindow() #Contains the plot
+        self.dataView = ReadingWindow()  # Contains the plot
         startScanDialog = ScanStartBox()
         self.scanThread = threading.Thread(target=lambda: self.scan())
 
@@ -346,6 +368,7 @@ class PCScanController(tk.Tk):
         Reset data and limits of the polot and redraw 
         with newly buffered data
     """
+
     def drawPlot(self):
         self.dataView.plot.ax.clear()
         self.dataView.plot.ax.set_ylim(
@@ -419,7 +442,7 @@ class PCScanController(tk.Tk):
         self.frames["ConfigureMenu"].startPosBut.configure(
             command=self.setStartPos)
         self.frames["ConfigureMenu"].bind(self.configKeys[self.frames[
-                                          "ConfigureMenu"].startPosBut], lambda f: self.setStartPos())
+            "ConfigureMenu"].startPosBut], lambda f: self.setStartPos())
         self.frames["ConfigureMenu"].stopPosBut.configure(
             command=self.setStopPos)
         self.frames["ConfigureMenu"].bind(self.configKeys[self.frames[
