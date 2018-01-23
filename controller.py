@@ -64,6 +64,15 @@ class PCScanController(tk.Tk):
 
         self.configKeys.update(
             {self.frames["ConfigureMenu"].channelBut: "<n>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].delayBut: "<d>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].stopPosBut: "<f>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].startPosBut: "<t>"})
+        self.configKeys.update(
+            {self.frames["ConfigureMenu"].scanIncBut: "<i>"})
+
 
         self.controlEnableList = list()
         self.controlEnableList.append(self.frames["ControlMenu"].jogContinFBut)
@@ -438,7 +447,7 @@ class PCScanController(tk.Tk):
         for value in self.gainDict.keys():
             self.frames["ConfigureMenu"].gainDropDown.children["menu"].add_command(
                 label=value, command=lambda gainValue=value: self.setGain(gainValue))
-
+        
         self.frames["ConfigureMenu"].startPosBut.configure(
             command=self.setStartPos)
         self.frames["ConfigureMenu"].bind(self.configKeys[self.frames[
@@ -453,6 +462,7 @@ class PCScanController(tk.Tk):
                                           "ConfigureMenu"].scanIncBut], lambda i: self.setScanInc())
         self.frames["ConfigureMenu"].delayBut.configure(
             command=self.setDelay)
+
         self.frames["ConfigureMenu"].bind(
             self.configKeys[self.frames["ConfigureMenu"].delayBut], lambda d: self.setDelay())
         self.frames["ConfigureMenu"].channelBut.configure(
