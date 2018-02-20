@@ -11,39 +11,86 @@
 
 \setlength{\droptitle}{-10em} 
 \usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{upgreek}
 \usepackage{listings}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\lstset{language=Python}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{block} = [rectangle, draw, fill=white, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+    \tikzstyle{block2} = [rectangle, draw, fill=white, 
+    text width=8em, text centered, rounded corners, minimum height=4em]
+    \tikzstyle{arrow} = [thick,->,>=stealth]
+\lstset{language=bash}
 
 \newcommand\floor[1]{\lfloor#1\rfloor}
 \newcommand\ceil[1]{\lceil#1\rceil}
 \def\code#1{\texttt{#1}}
 
+
+
 \begin{document}
 \author{Peter Timperman}
-\title{PyScan Manual}
+\title{PyScan Developers Manual}
 \maketitle
 \section{Introduction}
-    PyScan is a program to control the HD-300 dye laser and quire from a Measurement Computing PCI-DAS1002 data acquisition card. 
-    PyScan is divided into seven files: \texttt{model.py}, \texttt{debug.py}, \texttt{controller.py}, \texttt{board.py}, \texttt{session.py}, \texttt{commands.py}, and \texttt{view.py}. There is also an \texttt{\textunderscore\textunderscore init.py\textunderscore\textunderscore} file is used to simplify imports. The programs architecture follows the Model-View-Controller structure. 
+    PyScan is a program to control the HD-300 dye laser and aquire from a Measurement Computing PCI-DAS1002 data acquisition card. 
+    PyScan is divided into seven files: \texttt{model.py}, \texttt{debug.py}, \texttt{controller.py}, \texttt{board.py}, \texttt{session.py}, \texttt{commands.py}, and \texttt{view.py}. There is also an \texttt{\textunderscore\textunderscore init.py\textunderscore\textunderscore} file is used to simplify imports. The program's architecture follows the Model-View-Controller structure (Figure 1). 
     
     To run PyScan, navigate to its local directory and run \texttt{python controller.py} from the command line.
+
+\begin{figure}[h]
+    \centering
+    \caption{MVC Structure}
+    \begin{tikzpicture}[node distance=2cm]
     
+       
+        \node [block  ] (Controller) {Controller: Higher Level Logic };
+        \node [block, below of=Controller, xshift=-2cm] (Model) {Model: Laser};
+    
+        \node [block,   below of=Controller, xshift=2cm ] (View) {View:\\GUI};
+    
+        \draw [arrow] (Controller) -- (Model);
+        \draw [arrow] (Controller) -- (View);
+        \draw [arrow] (Model) -- (Controller);
+        \draw[arrow ] (View) -- (Controller);
+    
+    \end{tikzpicture}
+\end{figure} 
 \section{Important Modules}
 \subsection{PyUniversalLibrary}
-Measurement Computing provides the Universal Library for  C, C#, and Visual Basic that interfaces with their data acquisition hardware. PyScan uses PyUniversalLibrary, a Python wrapper for the Universal Library's C implementation. PyUniversalLibrary only works in Python 2. Source code, documentation, and installation instructions are available at https://github.com/astraw/PyUniversalLibrary. Documentation for the Universal Library is available at http://www.mccdaq.com/PDFs/manuals/Universal-Library-Help.pdf. \subsection{PySerial}
-Serial communication in Windows XP are controlled by Win32 binaries. The PySerial module interfaces with these binaries. The most current version of PySerial, 3.3, does not work with Python 2 so PySerial 2.7 must be used. 
-\\ Documentation is available at https://pythonhosted.org/pyserial/.
+Measurement Computing provides the Universal Library for  C, C\#, and Visual Basic that interfaces with their data acquisition hardware. PyScan uses PyUniversalLibrary, a Python wrapper for the Universal Library's C implementation. PyUniversalLibrary only works in Python 2. Source code, documentation, and installation instructions are available at \url{https://github.com/astraw/PyUniversalLibrary}. Documentation for the Universal Library is available at \url{http://www.mccdaq.com/PDFs/manuals/Universal-Library-Help.pdf}. \subsection{PySerial}
+Serial communication in Windows XP is controlled by Win32 binaries. The PySerial module interfaces with these binaries. The most current version of PySerial, 3.3, does not work with Python 2 so PySerial 2.7 must be used. 
+\\ Documentation is available at \url{https://pythonhosted.org/pyserial/}.
 \subsection{Tkinter}
-Tkinter is Python's default user interface module. It is used to implement all of PyScan's GUI. Helpful tutorials and guides are available at http://effbot.org/tkinterbook/tkinter-index.htm.  
+Tkinter is Python's default user interface module. It is used to implement all of PyScan's GUI. Helpful tutorials and guides are available at \url{http://effbot.org/tkinterbook/tkinter-index.html}.  
+\section{Version Control}
+\subsection{Git}
+Git is used both for local version control and collaboration in the cloud. Changes should be committed after every incremental change, fix, or feature addition. Commit messages should be at most two sentences descriptions. A good rule of thumb is if your commit message is too long then you should of have committed earlier. The remote repository is hosted at \url{https://github.com/poliklab/PyScan/}
+\begin{lstlisting}
+#Be in the working PyScan Directory 
+cd <PyScanDirectory>
+#Track and stage changes
+git stage <files to track>
+#To make a local commit 
+git commit -m "message here"
+#To push to repository at github.com
+git push
+\end{lstlisting}
+\subsubsection{\code{.gitignore}}
+A \code{.gitignore} file is maintained to filter out files types that should not be tracked using git. These type include \code{.pyc}, settings, and log file.
+\subsection{Directory Dumps}
+Directory dumps should occur at significant stages of the project, such as start of a semester or when a team member leaves the project. To create a directory copy the current working directory and rename using this pattern: \texttt{NameYearMonthDay}. Example, PyScan Directory dump for January 23, 2018: \texttt{PyScan180123}. The local git repository for the copied directory should be delinked from the remote repository at github.com using \code{git remote rm origin}.
 \section{Model}
 The model is intended to  represent the logic and attributes of data acquisition and the scanning unit and is defined in \texttt{board.py} and \texttt{model.py}
 \subsection{\texttt{board.py}}
 The data acquisition card board be initially configured with Measurement Computing's InstaCal software.
-\texttt{board.py} implements logic for reading the data acquisition hard using the PyUniversalLibrary module. The Universal Library method \texttt{cbAIn(board, channel, gain)} reads a analog voltage and coverts it to a unsigned 12 bit integer. This integer is then converted to a voltage with \texttt{cbToEngUnits(board, gain, dataValue)}. Gain is controlled by integer codes defined in the Universal Library. 
-\begin{table}[]
+\texttt{board.py} implements logic for reading the data acquisition hard using the PyUniversalLibrary module. The Universal Library method \texttt{cbAIn(board, channel, gain)} reads a analog voltage and coverts it to a unsigned 12 bit integer. This integer is then converted to a voltage with \texttt{cbToEngUnits(board, gain, dataValue)}. Gain is controlled by integer codes defined in the Universal Library (Table 1). 
+\begin{table}[H]
 \centering
 \caption{Gain Codes}
 \label{my-label}
@@ -75,7 +122,7 @@ The Scanner class implements the specific commands defined in the instrument's m
     \item \texttt{ACK}
 \end{enumerate}
 Scanner uses an instance of the Serial Interface class to write the specific commands.
-The instruments position boundaries are hard-coded as class attributes.  \texttt{monitorBounds()} uses a separate thread if the instrument is within bounds while slewing or jogging. 
+The instruments position boundaries are hard-coded as class attributes.  
 The current position is rounded so that position recorded by the program reflects the instrument's control panel. 
 \section{View}
 The view implements all of the GUI components using Tkinter. The main frames defined are:
@@ -99,10 +146,50 @@ The controller uses two files: \texttt{session.py} and \texttt{controller.py}.
 The session class is helper class that buffers position and acquired data. It can also format, save, and print buffered data.
 \subsection{\texttt{controller.py}}
 The controller class is the most complex potion of the entire program. It binds the view's button and controls with the models functions and logic. It  controls window and view management, saving and loading settings, and plotting the data. It also defines a dictionary used to manage keyboard bindings. 
-The scanning logic is the most critical component of the program. The Scanner manipulates the laser's position and steps from based on predetermined parameters: start position, and end position, and position increment. The Session class buffers the data which is based to the ScanPlot frame and plotted.                                                                                                                                                              
+The scanning logic is the most critical component of the program. The controller uses the scanner to manipulate the laser's position and to step  based on predetermined parameters: start position, and end position, and position increment. The Session class buffers the data which is based to the ScanPlot frame and plotted. The main program  is divided into two threads.
+\subsubsection{Jog/Slew Thread}
+When jogging or slewing the controller uses function, \texttt{monitorBounds()}, which creates a separate thread to ensure instrument is within bounds while slewing or jogging.  
+When the jog or slew function is called via the keyboard or GUI, a new jogging/slewing thread is spun up. Then the jog or slew command is written to the serial port. The thread continually \texttt{ACK}s the instrument, check the bounds, updates the instruments recorded position, and rewrites the GUI position label.  
+
+\begin{figure}[h]
+    \centering
+    \caption{Thread Structure}
+    \begin{tikzpicture}[node distance=4cm]
+    
+       
+        \node [block2  ] (Main) {Main Thread: Listen for events \\ Control Bindings\\Control GUI \\Display Info };
+        \node [block2, below of=Controller, xshift=3cm] (Jog) {Model: \texttt{ACK} instrument \\Check Bounds \\ Update Position Labels};
+    
+        \node [block2,   below of=Controller, xshift=-3cm ] (Stop) {Stop:\\ Kill Thread \\ Stop Laser \\ Update GUI Labels};
+    
+        \draw [arrow] (Main) -- node[anchor= west] {Jog Command: Start New Thread }(Jog) ;
+        \draw [arrow] (Jog) -- (Stop);
+        \draw [arrow] (Stop) -- (Main);
+
+    
+    \end{tikzpicture}
+\end{figure} 
+
 \section{Misc.}
 \subsection{\texttt{commands.py}}
-This is helper file that binds the command codes such as \texttt{ENQ} or \texttt{NUll} to their respective ASCII integer codes.
+This is helper file that binds the command codes such as \texttt{ENQ} or \texttt{NULL} to their respective ASCII integer codes.
 \subsection{\texttt{debug.py}}
-This is a helper class that logs messages to and from the program and instruments in a file called \texttt{scan\textunderscore config.set} . It can be enabled by calling the program with an \texttt{--debug} argument from the command line.
+This is a helper class that logs messages to and from the program and instruments in a file called \texttt{scan\textunderscore config.set} . It can be enabled by calling the program with a \texttt{--debug} argument from the command line.
+\section{Current Bugs}
+\begin{enumerate}
+    \item Float value error when parsing incomplete response from instrument.
+\end{enumerate}
+\section{Desired Features}
+\begin{enumerate}
+    \item Suppressing keyboard bindings for slew, jog forward, and jog backward when currently jogging and slewing.
+    \item Python 3 conversion 
+    \item Implement Official MCC PyUL Library \url{https://github.com/mccdaq/mcculw}
+    \item Implement PySerial 3
+    \item Debug Mode
+    \item Improved Logging 
+    \item Doubler 
+    \item Clear and more configurable export data
+\end{enumerate}
+\subsection{Cleaner Jogging and Threading}
+Threads are not the cleanest way to to jog/slew and check bounds and to udapte the GUI's labels. To eliminate the use of multiple threads commands from the keyboard can be buffered.
 \end{document}
