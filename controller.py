@@ -5,6 +5,7 @@ import Tkinter as tk
 import time
 import threading
 from session import Session
+import pdb 
 """"
 Keybinding labels are hardcoded into the text of the button in view
 If key bindings are changed in the cotroller be sure to update the view 
