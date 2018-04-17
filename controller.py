@@ -5,6 +5,7 @@ import Tkinter as tk
 import time
 import threading
 from session import Session
+import pdb 
 """"
 Keybinding labels are hardcoded into the text of the button in view
 If key bindings are changed in the cotroller be sure to update the view 
@@ -155,6 +156,7 @@ class PCScanController(tk.Tk):
             self.scanUnit.ack()
             self.updatePositionLabel()
             self.monitorBounds(direction)
+             # print "Active threads"+ str(threading.enumerate())
             time.sleep(.1)
     """
         Updaye the postion label.
@@ -258,6 +260,11 @@ class PCScanController(tk.Tk):
             print "Stopping thread"
             self.scanThread.scan_run = False
             self.scanUnit.stop()
+        if hasattr(self, "moveThread") and self.moveThread is not None:
+            print "Stopping thread"
+            self.moveThread.move_run = False
+            self.moveThread.join()
+            self.scanUnit.stop()        
         # self.monitorBounds("Forward")
         self.scanUnit.jogForward()
         self.moveThread = threading.Thread(
@@ -277,6 +284,11 @@ class PCScanController(tk.Tk):
             print "Stopping thread"
             self.scanThread.scan_run = False
             self.scanUnit.stop()
+        if hasattr(self, "moveThread") and self.moveThread is not None:
+            print "Stopping thread"
+            self.moveThread.move_run = False
+            self.moveThread.join()
+            self.scanUnit.stop()   
         self.moveThread = threading.Thread(
             target=lambda: self.movePosition("Reverse"))
         self.disableControlButtons()
@@ -296,6 +308,8 @@ class PCScanController(tk.Tk):
         if hasattr(self, "moveThread") and self.moveThread is not None:
             print "Stopping thread"
             self.moveThread.move_run = False
+            self.moveThread.join()
+            self.scanUnit.stop()
         self.scanUnit.stop()
         self.scanUnit.ack()
         self.frames["ControlMenu"].posTxt.configure(
