@@ -21,11 +21,7 @@ class Board(object):
     def __str__(self):
         return "Dev" + str(self.deviceNumber) + "/avi" + str(self.channelNumber)
 
-    def getChannelNumber(self):
-        return self.channelNumber
-
-    def getDeviceNumber(self):
-        return self.deviceNumber
+  
     """
 	Args:
 		Gain: Voltage amplifaction defualts to zero
@@ -44,8 +40,8 @@ class Board(object):
             #     voltage = 0 
             #     short = 0 
             # else:
-            short = UL.cbAIn(self.getDeviceNumber(), i, gain)
-            voltage = UL.cbToEngUnits(self.getDeviceNumber(), gain, short)
+            short = UL.cbAIn(self.deviceNumber, i, gain)
+            voltage = UL.cbToEngUnits(self.deviceNumber, gain, short)
             voltageReadings.append(voltage)
             print str(short) + " " + str(voltage)
             # print UL.cbToEngUnits(self.getDeviceNumber(), 0, UL.cbAIn(
