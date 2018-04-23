@@ -4,12 +4,13 @@ import time
 
 
 
-class SerialInterface (object):
+class SerialInterface(object):
 
     def __init__(self):
         self.device = serial.Serial(
             port="COM2", baudrate=9600, bytesize=serial.EIGHTBITS, stopbits=2)
         self.lastResponse = ""
+        self.protected = False
 
     def computeCheckSum(self, cmd):
         # All most a carbon copy of the pascal algorithm in PSCAN38
@@ -19,37 +20,44 @@ class SerialInterface (object):
         return chr((cksm & 15) + 96) + chr((int(cksm / 16) & 15) + 96)
 
     def execute(self, message):
-        message = str(message)
-        reply = ""
-        enqCounter = 0
-        replyCounter = 0
-        self.device.flushInput()  # Flush input buffer to pervent overflow
-        reply = ""
-        while enqCounter < 450:  # Quit after reading 450 nulls or about 10 cycles
-            recieved = self.device.read()
+        if self.protected is False:
 
-            if recieved == ProtcolMessage.ENQ.value:
-                # Write our message!
-                if message == ProtcolMessage.ACK.value:
-                    self.device.write(message)
-                else:
-                    final = message + \
-                        self.computeCheckSum(message) + ProtcolMessage.CR.value
-                    self.device.write(final)
-                break  # Move on to waiting the reply
-            enqCounter += 1
-        while replyCounter < 1200:  # Quit after reading 1200 characters with out a valid response
-            recieved = self.device.read()
-            # Ignore response if it is a NULL or ENQ
-            if recieved != ProtcolMessage.NULL.value and recieved != ProtcolMessage.ENQ.value:
-                if recieved == chr(13):  # Carriage return. Has to be ASCII 13
-                    print reply
-                    self.lastResponse = reply
-                    print message
-                    self.parseReply(reply)
-                    break
-                reply += recieved
-            replyCounter += 1
+            self.protected = True
+            message = str(message)
+            reply = ""
+            enqCounter = 0
+            replyCounter = 0
+            self.device.flushInput()  # Flush input buffer to pervent overflow
+            reply = ""
+            while enqCounter < 450:  # Quit after reading 450 nulls or about 10 cycles
+                recieved = self.device.read()
+
+                if recieved == ProtcolMessage.ENQ.value:
+                    # Write our message!
+                    if message == ProtcolMessage.ACK.value:
+                        self.device.write(message)
+                    else:
+                        final = message + \
+                            self.computeCheckSum(message) + ProtcolMessage.CR.value
+                        self.device.write(final)
+                    break  # Move on to waiting the reply
+                enqCounter += 1
+            while replyCounter < 1200:  # Quit after reading 1200 characters with out a valid response
+                recieved = self.device.read()
+                # Ignore response if it is a NULL or ENQ
+                if recieved != ProtcolMessage.NULL.value and recieved != ProtcolMessage.ENQ.value:
+                    if recieved == chr(13):  # Carriage return. Has to be ASCII 13
+                        print reply
+                        self.lastResponse = reply
+                        print message
+                        self.parseReply(reply)
+                        break
+                    reply += recieved
+                replyCounter += 1    
+            self.protected = False 
+        else:
+            print "Protected: " + message
+
 
     def parseReply(self, reply):
         self.status = reply[0]  # First index is a status message
@@ -57,6 +65,7 @@ class SerialInterface (object):
         # Rest of the message
         # Last two indexes are the checkum which is igored
         self.digits = float(str.strip(reply[2:-2]))
+
 
 
 class Scanner(object):
