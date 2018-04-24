@@ -50,7 +50,7 @@
     
        
         \node [block  ] (Controller) {Controller: Higher Level Logic };
-        \node [block, below of=Controller, xshift=-2cm] (Model) {Model: Laser};
+        \node [block, below of=Controller, xshift=-2cm] (Model) {Model: Laser/DAQ};
     
         \node [block,   below of=Controller, xshift=2cm ] (View) {View:\\GUI};
     
@@ -84,12 +84,12 @@ git push
 \subsubsection{\code{.gitignore}}
 A \code{.gitignore} file is maintained to filter out files types that should not be tracked using git. These type include \code{.pyc}, settings, and log file.
 \subsection{Directory Dumps}
-Directory dumps should occur at significant stages of the project, such as start of a semester or when a team member leaves the project. To create a directory copy the current working directory and rename using this pattern: \texttt{NameYearMonthDay}. Example, PyScan Directory dump for January 23, 2018: \texttt{PyScan180123}. The local git repository for the copied directory should be delinked from the remote repository at github.com using \code{git remote rm origin}.
+Directory dumps should occur at significant stages of the project, such as start of a semester or when a team member leaves the project. To create a directory copy the current working directory and rename using this pattern: \texttt{NameYearMonthDay}. Example, PyScan Directory dump for January 23, 2018: \texttt{PyScan180123}. The local git repository for the copied directory should be delinked from the remote repository at github.com using \code{git remote rm origin}. Git can be used either with the GIT GUI or GIT BASH.
 \section{Model}
 The model is intended to  represent the logic and attributes of data acquisition and the scanning unit and is defined in \texttt{board.py} and \texttt{model.py}
 \subsection{\texttt{board.py}}
-The data acquisition card board be initially configured with Measurement Computing's InstaCal software.
-\texttt{board.py} implements logic for reading the data acquisition hard using the PyUniversalLibrary module. The Universal Library method \texttt{cbAIn(board, channel, gain)} reads a analog voltage and coverts it to a unsigned 12 bit integer. This integer is then converted to a voltage with \texttt{cbToEngUnits(board, gain, dataValue)}. Gain is controlled by integer codes defined in the Universal Library (Table 1). 
+The data acquisition card  be initially configured with Measurement Computing's InstaCal software.
+\texttt{board.py} implements logic for reading the data acquisition card using the PyUniversalLibrary module. The Universal Library method \texttt{cbAIn(board, channel, gain)} reads a analog voltage and coverts it to a unsigned 12 bit integer. This integer is then converted to a voltage with \texttt{cbToEngUnits(board, gain, dataValue)}. Gain is controlled by integer codes defined in the Universal Library (Table 1). 
 \begin{table}[H]
 \centering
 \caption{Gain Codes}
@@ -107,7 +107,7 @@ Gain  & Code \\ \hline
 \subsection{\texttt{model.py}}
 The \texttt{model.py} consists of two classes: SerialInterface and Scanner.
 \subsubsection{Serial Interface}
-The Serial Interface implements the low level serial communication logic. The instrument using a complex protocol to receive commands and send responses. The instrument will only receive a command after it sends a an \code{<ENQ>}. After an \code{<ENQ>} is received a message can be written to the instrument. After command is written, the serial port is read from and received characters are buffered.
+The Serial Interface implements the low level serial communication logic. The instrument using a complex protocol to receive commands and send responses. The instrument will only receive a command after it sends a an \code{<ENQ>}. After an \code{<ENQ>} is received a message can be written to the instrument. After a command is written, the serial port is read from and received characters are buffered.
 Each command must have a check sum computed and appended to the command. The algorithm for computing the check sum is defined both in instruments manual and PCScan38.
 The buffered message is parsed into status and current position. 
 \subsubsection{Scanner}
@@ -143,13 +143,13 @@ Other special frames used are:
 \section{Controller}
 The controller uses two files: \texttt{session.py} and \texttt{controller.py}.
 \subsection{\texttt{session.py}}
-The session class is helper class that buffers position and acquired data. It can also format, save, and print buffered data.
+The session class is a helper class that buffers position and acquired data. It can also format, save, and print buffered data.
 \subsection{\texttt{controller.py}}
 The controller class is the most complex potion of the entire program. It binds the view's button and controls with the models functions and logic. It  controls window and view management, saving and loading settings, and plotting the data. It also defines a dictionary used to manage keyboard bindings. 
-The scanning logic is the most critical component of the program. The controller uses the scanner to manipulate the laser's position and to step  based on predetermined parameters: start position, and end position, and position increment. The Session class buffers the data which is based to the ScanPlot frame and plotted. The main program  is divided into two threads.
+The scanning logic is the most critical component of the program. The controller uses the scanner to manipulate the laser's position and to step  based on predetermined parameters: start position, and end position, and position increment. The Session class buffers the data which is based to the ScanPlot frame and plotted. The main program  is divided into three threads: Main Thread, Jog/Slew Thread, and Scan Thread.
 \subsubsection{Jog/Slew Thread}
 When jogging or slewing the controller uses function, \texttt{monitorBounds()}, which creates a separate thread to ensure instrument is within bounds while slewing or jogging.  
-When the jog or slew function is called via the keyboard or GUI, a new jogging/slewing thread is spun up. Then the jog or slew command is written to the serial port. The thread continually \texttt{ACK}s the instrument, check the bounds, updates the instruments recorded position, and rewrites the GUI position label.  
+When the jog or slew function is called via the keyboard or GUI, a new jogging/slewing thread is spun up. Then the jog or slew command is written to the serial port. The thread continually \texttt{ACK}s the instrument, check the bounds, updates the instruments recorded position, and rewrites the GUI position label.  See Figure 2.
 
 \begin{figure}[h]
     \centering
@@ -162,34 +162,38 @@ When the jog or slew function is called via the keyboard or GUI, a new jogging/s
     
         \node [block2,   below of=Controller, xshift=-3cm ] (Stop) {Stop:\\ Kill Thread \\ Stop Laser \\ Update GUI Labels};
     
-        \draw [arrow] (Main) -- node[anchor= west] {Jog Command: Start New Thread }(Jog) ;
+        \draw [arrow] (Main) -- node[anchor= west] {Jog/Slew Command: Start New Thread }(Jog) ;
         \draw [arrow] (Jog) -- (Stop);
         \draw [arrow] (Stop) -- (Main);
 
     
     \end{tikzpicture}
 \end{figure} 
+\subsubsection{Scan Thread}
+This thread takes a data point, redraws the plot, advances to the next point until the scan is stopped or the last data point is reached. This thread can also be paused. 
 
 \section{Misc.}
 \subsection{\texttt{commands.py}}
 This is helper file that binds the command codes such as \texttt{ENQ} or \texttt{NULL} to their respective ASCII integer codes.
 \subsection{\texttt{debug.py}}
 This is a helper class that logs messages to and from the program and instruments in a file called \texttt{scan\textunderscore config.set} . It can be enabled by calling the program with a \texttt{--debug} argument from the command line.
+\subsection{\texttt{serial\_controller\_raw.py}}
+This a simple serial terminal designed to work with the laser. This program is used for debugging serial communication issues. Enter commands as text given in the SCU manual.
 \section{Current Bugs}
 \begin{enumerate}
-    \item Float value error when parsing incomplete response from instrument.
+    \item Convert ceiling and floor with unit change
+    \item Save scan file bug 
 \end{enumerate}
 \section{Desired Features}
 \begin{enumerate}
     \item Suppressing keyboard bindings for slew, jog forward, and jog backward when currently jogging and slewing.
     \item Python 3 conversion 
     \item Implement Official MCC PyUL Library \url{https://github.com/mccdaq/mcculw}
-    \item Implement PySerial 3
     \item Debug Mode
     \item Improved Logging 
     \item Doubler 
+    \item Monitor thread (basically a version of move thread) for slewing
     \item Clear and more configurable export data
 \end{enumerate}
-\subsection{Cleaner Jogging and Threading}
-Threads are not the cleanest way to to jog/slew and check bounds and to udapte the GUI's labels. To eliminate the use of multiple threads commands from the keyboard can be buffered.
+
 \end{document}
