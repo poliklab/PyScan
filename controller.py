@@ -88,6 +88,7 @@ class PCScanController(tk.Tk):
 
         self.floor = 15000
         self.ceiling = 15100
+        self.limitsFlag = False 
     """
     Args:
         page: frame to be disaplayed  
@@ -155,7 +156,13 @@ class PCScanController(tk.Tk):
         while getattr(self.moveThread, "move_run", True):
             self.scanUnit.ack()
             self.updatePositionLabel()
-            self.monitorBounds(direction)
+            if self.inBounds(direction) is True:
+                self.scanUnit.stop()
+                self.scanUnit.ack()
+                self.frames["ControlMenu"].posTxt.configure(
+                    text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+                self.enableControlButtons()
+                return 
              # print "Active threads"+ str(threading.enumerate())
             time.sleep(.1)
     """
@@ -176,16 +183,23 @@ class PCScanController(tk.Tk):
         Postion bounds read in from config file
     """
 
-    def monitorBounds(self,  direction):
+    def inBounds(self,  direction):
         position = self.scanUnit.currentPosition
         if direction == "Forward":
             if position >= self.ceiling:
                 print "Instrument ceiling exceeded"
-                self.stop()
+                print "Stopping thread"
+                return True
+            else:
+                return False 
         elif direction == "Reverse":
             if position <= self.floor:
                 print "Instrument floor exceeded"
-                self.stop()
+                print "Stopping thread"
+                return True
+            else:
+                return False
+                    
 
     #--------------Control Menu-----------------------------------------------
     def bindControlMenu(self):
@@ -256,21 +270,21 @@ class PCScanController(tk.Tk):
     """
 
     def jogForward(self):
-        if hasattr(self, "scanThread") and self.scanThread is not None:
-            print "Stopping thread"
-            self.scanThread.scan_run = False
-            self.scanUnit.stop()
-        if hasattr(self, "moveThread") and self.moveThread is not None:
-            print "Stopping thread"
-            self.moveThread.move_run = False
-            self.moveThread.join()
-            self.scanUnit.stop()        
-        # self.monitorBounds("Forward")
-        self.scanUnit.jogForward()
-        self.moveThread = threading.Thread(
-            target=lambda: self.movePosition("Forward"))
-        self.disableControlButtons()
-        self.moveThread.start()
+        if self.inBounds("Forward") is False:
+            if hasattr(self, "scanThread") and self.scanThread is not None:
+                print "Stopping thread"
+                self.scanThread.scan_run = False
+                self.scanUnit.stop()
+            if hasattr(self, "moveThread") and self.moveThread is not None:
+                print "Stopping thread"
+                self.moveThread.move_run = False
+                self.moveThread.join()
+                self.scanUnit.stop()        
+            self.scanUnit.jogForward()
+            self.moveThread = threading.Thread(
+                target=lambda: self.movePosition("Forward"))
+            self.disableControlButtons()
+            self.moveThread.start()
 
     """
        Kill old thread if one exists 
@@ -280,20 +294,21 @@ class PCScanController(tk.Tk):
    """
 
     def jogReverse(self):
-        if hasattr(self, "scanThread") and self.scanThread is not None:
-            print "Stopping thread"
-            self.scanThread.scan_run = False
-            self.scanUnit.stop()
-        if hasattr(self, "moveThread") and self.moveThread is not None:
-            print "Stopping thread"
-            self.moveThread.move_run = False
-            self.moveThread.join()
-            self.scanUnit.stop()   
-        self.moveThread = threading.Thread(
-            target=lambda: self.movePosition("Reverse"))
-        self.disableControlButtons()
-        self.scanUnit.jogReverse()
-        self.moveThread.start()
+        if self.inBounds("Reverse") is False:
+            if hasattr(self, "scanThread") and self.scanThread is not None:
+                print "Stopping thread"
+                self.scanThread.scan_run = False
+                self.scanUnit.stop()
+            if hasattr(self, "moveThread") and self.moveThread is not None:
+                print "Stopping thread"
+                self.moveThread.move_run = False
+                self.moveThread.join()
+                self.scanUnit.stop()   
+            self.moveThread = threading.Thread(
+                target=lambda: self.movePosition("Reverse"))
+            self.disableControlButtons()
+            self.scanUnit.jogReverse()
+            self.moveThread.start()
 
     """
         Gerneic all stop for slewing, jogging, and scanning.
