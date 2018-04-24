@@ -2,7 +2,9 @@ import serial
 from commands import *
  
 # Based on specs given in SCU manual
-ser = serial.Serial(port="COM2", baudrate=9600,
+#ser = serial.Serial(port="COM2", baudrate=9600,
+                    #bytesize=serial.EIGHTBITS, stopbits=2, rtscts=True)
+ser = serial.Serial(port="COM1", baudrate=9600,
                     bytesize=serial.EIGHTBITS, stopbits=2, rtscts=True)
 
 class DebugLogger(object):
