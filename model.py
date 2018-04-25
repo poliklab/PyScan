@@ -8,7 +8,7 @@ class SerialInterface(object):
 
     def __init__(self):
         self.device = serial.Serial(
-            port="COM2", baudrate=9600, bytesize=serial.EIGHTBITS, stopbits=2)
+            port="COM1", baudrate=9600, bytesize=serial.EIGHTBITS, stopbits=2)
         self.lastResponse = ""
         self.protected = False
 

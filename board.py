@@ -1,5 +1,8 @@
-import UniversalLibrary as UL
+#import UniversalLibrary as UL
 import time 
+from mcculw import ul
+from mcculw.enums import ULRange
+from mcculw.ul import ULError
 """
 This class obejctfies the board and is resposbible
 for reading the data using the unversial library
@@ -35,13 +38,14 @@ class Board(object):
         # input as voltage
         voltageReadings = list()
         # print self.channelNumber
+        ai_range = ULRange.BIP10VOLTS
         for i in range(0, self.channelNumber+1):
             # if i ==1:
             #     voltage = 0 
             #     short = 0 
             # else:
-            short = UL.cbAIn(self.deviceNumber, i, gain)
-            voltage = UL.cbToEngUnits(self.deviceNumber, gain, short)
+            short = ul.a_in(self.deviceNumber, i, ai_range)
+            voltage = float(ul.to_eng_units(self.deviceNumber, gain, short))
             voltageReadings.append(voltage)
             print str(short) + " " + str(voltage)
             # print UL.cbToEngUnits(self.getDeviceNumber(), 0, UL.cbAIn(
