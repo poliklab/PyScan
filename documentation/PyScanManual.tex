@@ -43,6 +43,9 @@
     
     To run PyScan, navigate to its local directory and run \texttt{python controller.py} from the command line.
 
+    
+    
+
 \begin{figure}[h]
     \centering
     \caption{MVC Structure}
@@ -62,12 +65,39 @@
     \end{tikzpicture}
 \end{figure} 
 \section{Important Modules}
-\subsection{PyUniversalLibrary}
-Measurement Computing provides the Universal Library for  C, C\#, and Visual Basic that interfaces with their data acquisition hardware. PyScan uses PyUniversalLibrary, a Python wrapper for the Universal Library's C implementation. PyUniversalLibrary only works in Python 2. Source code, documentation, and installation instructions are available at \url{https://github.com/astraw/PyUniversalLibrary}. Documentation for the Universal Library is available at \url{http://www.mccdaq.com/PDFs/manuals/Universal-Library-Help.pdf}. \subsection{PySerial}
-Serial communication in Windows XP is controlled by Win32 binaries. The PySerial module interfaces with these binaries. The most current version of PySerial, 3.3, does not work with Python 2 so PySerial 2.7 must be used. 
+\subsection{MCC Universal Library and Python Wrappers (MCCULW and PyUniversalLibrary}
+Measurement Computing provides the Universal Library for  C, C\#, and Visual Basic that interfaces with their data acquisition hardware. Downloads for Windows Systems are available at  \url{https://www.mccdaq.com/daq-software/universal-library.aspx}. A version is also is available for Linux at \url{https://github.com/mccdaq/uldaq}.  Documentation for the Universal Library is available at \url{http://www.mccdaq.com/PDFs/manuals/Universal-Library-Help.pdf}. 
+
+PyScan uses MCCULW, Measurement Computing Official Python wrapper for their Universal Library. It is compatible with python 2.7 and 3.4+. Source code, examples, installation instructions, and other documentation is available at \url{https://github.com/mccdaq/mcculw}.
+
+PyScan can also use PyUniversalLibrary, an unofficial Python wrapper for the Universal Library's C implementation. PyUniversalLibrary only works in Python 2. Source code, documentation, and installation instructions are available at \url{https://github.com/astraw/PyUniversalLibrary}.
+
+To use MCCULW or PyUniversalLibrary, numpy, a python library for numerical computation, most be installed. See \url{http://www.numpy.org/} for more information.
+\subsection{PySerial}
+Serial communication in Windows is controlled by Win32 binaries. The PySerial module interfaces with these binaries.
 \\ Documentation is available at \url{https://pythonhosted.org/pyserial/}.
-\subsection{Tkinter}
-Tkinter is Python's default user interface module. It is used to implement all of PyScan's GUI. Helpful tutorials and guides are available at \url{http://effbot.org/tkinterbook/tkinter-index.html}.  
+\subsection{Tkinter and Matplotlib}
+Tkinter is Python's default user interface module. It is used to implement all of PyScan's GUI. Helpful tutorials and guides are available at \url{http://effbot.org/tkinterbook/tkinter-index.html}. 
+To create plots PyScan uses Matplotlib.
+Documentation is available at \url{https://matplotlib.org/}.
+\section{New Workspace Setup}
+Install everything listed as admin.
+\subsection{Required Software}
+\begin{enumerate}
+    \item Install latest stable version of Python 3
+    \item Install the MCC Universal Library (be sure to get correct version for desired OS)
+    \item Install Numpy: \texttt{python -m pip install numpy}
+    \item Install MCCULW:  \texttt{python -m pip install mcculw}
+    \item Install Matplotlib \texttt{python -m pip install matplotlib}
+    \item Install PySerial: \texttt{python -m pip install pyserial}
+\end{enumerate}
+\subsection{Additional Software}
+\begin{enumerate}
+    \item Git for verison control
+    \item Text Eidtor (i.e Sublime Text)
+    \item Terminal Emulator (i.e Putty)
+    \item Web Browser (i.e Firefox)
+\end{enumerate}
 \section{Version Control}
 \subsection{Git}
 Git is used both for local version control and collaboration in the cloud. Changes should be committed after every incremental change, fix, or feature addition. Commit messages should be at most two sentences descriptions. A good rule of thumb is if your commit message is too long then you should of have committed earlier. The remote repository is hosted at \url{https://github.com/poliklab/PyScan/}
