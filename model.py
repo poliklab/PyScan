@@ -79,6 +79,7 @@ class Scanner(object):
         self.ack() # Get info from instument to intailize Scanner object 
         self.currentPosition = self.serialInterface.digits
         self.currentUnits = self.serialInterface.units
+        self.currentStatus = self.serialInterface.status
         if self.currentUnits == "D":  # Skip the degree units
             self.changeUnits()
         elif self.currentUnits == "N":
@@ -127,6 +128,7 @@ class Scanner(object):
         self.currentPosition = self.roundPosition(
             float(self.serialInterface.digits))
         self.currentUnits = self.serialInterface.units
+        self.currentStatus = self.serialInterface.status
 
     def stop(self):
         self.serialInterface.execute("S")

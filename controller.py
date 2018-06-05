@@ -149,23 +149,38 @@ class PCScanController(tk.Tk):
     """
     Args: 
         direction: either "forward" or "reverse" 
-        Ack instrument continually while jogging or slewing and update postion
+        Ack instrument continually while jogging or  and update postion
    """
 
-    def movePosition(self, direction):
+    def jogPosition(self, direction):
         while getattr(self.moveThread, "move_run", True):
             self.scanUnit.ack()
             self.updatePositionLabel()
             if self.inBounds(direction) is True:
                 self.scanUnit.stop()
                 self.scanUnit.ack()
-                self.frames["ControlMenu"].posTxt.configure(
-                    text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
+                self.updatePositionLabel()
                 self.enableControlButtons()
                 return
              # print "Active threads"+ str(threading.enumerate())
             time.sleep(.1)
+
     """
+        Similar to jogPosition, 
+        slewPosition defines a thread that checks if the the SCU has finished slewing
+    """
+    def slewPosition(self):
+        while getattr(self.slewThread, "slew_run", True):
+            self.scanUnit.ack()
+            self.updatePositionLabel()
+            if self.scanUnit.currentStatus == "S": #SCU has stopped. Slewing had finished
+                self.scanUnit.stop()
+                self.scanUnit.ack()
+                self.updatePositionLabel()
+                self.enableControlButtons()
+                return  
+            time.sleep(.1)  
+    """     
         Updaye the postion label.
         Used both in the scan and control menu 
     """
@@ -279,9 +294,14 @@ class PCScanController(tk.Tk):
                 self.moveThread.move_run = False
                 self.moveThread.join()
                 self.scanUnit.stop()
+            if hasattr(self, "slewThread") and self.slewThread is not None:
+                print "Stopping thread"
+                self.slewThread.slew_run = False
+                self.slewThread.join()
+                self.scanUnit.stop()    
             self.scanUnit.jogForward()
             self.moveThread = threading.Thread(
-                target=lambda: self.movePosition("Forward"))
+                target=lambda: self.jogPosition("Forward"))
             self.disableControlButtons()
             self.moveThread.start()
 
@@ -303,8 +323,13 @@ class PCScanController(tk.Tk):
                 self.moveThread.move_run = False
                 self.moveThread.join()
                 self.scanUnit.stop()
+            if hasattr(self, "slewThread") and self.slewThread is not None:
+                print "Stopping thread"
+                self.slewThread.slew_run = False
+                self.slewThread.join()
+                self.scanUnit.stop()    
             self.moveThread = threading.Thread(
-                target=lambda: self.movePosition("Reverse"))
+                target=lambda: self.jogPosition("Reverse"))
             self.disableControlButtons()
             self.scanUnit.jogReverse()
             self.moveThread.start()
@@ -323,6 +348,11 @@ class PCScanController(tk.Tk):
             print "Stopping thread"
             self.moveThread.move_run = False
             self.moveThread.join()
+            self.scanUnit.stop()
+        if hasattr(self, "slewThread") and self.slewThread is not None:
+            print "Stopping thread"
+            self.slewThread.slew_run = False
+            self.slewThread.join()
             self.scanUnit.stop()
         self.scanUnit.stop()
         self.scanUnit.ack()
@@ -344,14 +374,31 @@ class PCScanController(tk.Tk):
 
         def getSlewPos():
             position = float(dialogWindow.textEntry.get())
+            dialogWindow.destroy()
             if position > self.floor and position < self.ceiling:
-                
+                if hasattr(self, "scanThread") and self.scanThread is not None:
+                    print "Stopping thread"
+                    self.scanThread.scan_run = False
+                    self.scanUnit.stop()
+                if hasattr(self, "moveThread") and self.moveThread is not None:
+                    print "Stopping thread"
+                    self.moveThread.move_run = False
+                    self.moveThread.join()
+                    self.scanUnit.stop()
+                if hasattr(self, "slewThread") and self.slewThread is not None:
+                    print "Stopping thread"
+                    self.slewThread.slew_run = False
+                    self.slewThread.join()
+                    self.scanUnit.stop()
+                self.slewThread = threading.Thread( target=lambda: self.slewPosition())
                 self.scanUnit.slew(position)
+                self.slewThread.start()
             else:    
                 print self.floor
                 print self.ceiling
                 print "Entered position is now outside of bounds"
-            dialogWindow.destroy()
+           
+
         dialogWindow.yesButton.configure(
             command=lambda: getSlewPos())
         dialogWindow.bind("<Return>", lambda d: getSlewPos())
