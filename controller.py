@@ -5,7 +5,8 @@ import Tkinter as tk
 import time
 import threading
 from session import Session
-import pdb 
+import pdb
+import tkFileDialog as filedialog
 """"
 Keybinding labels are hardcoded into the text of the button in view
 If key bindings are changed in the cotroller be sure to update the view 
@@ -74,7 +75,6 @@ class PCScanController(tk.Tk):
         self.configKeys.update(
             {self.frames["ConfigureMenu"].scanIncBut: "<i>"})
 
-
         self.controlEnableList = list()
         self.controlEnableList.append(self.frames["ControlMenu"].jogContinFBut)
         self.controlEnableList.append(self.frames["ControlMenu"].jogContinRBut)
@@ -88,7 +88,7 @@ class PCScanController(tk.Tk):
 
         self.floor = 15000
         self.ceiling = 15100
-        self.limitsFlag = False 
+        self.limitsFlag = False
     """
     Args:
         page: frame to be disaplayed  
@@ -132,7 +132,7 @@ class PCScanController(tk.Tk):
     def yesLaser(self):
 
         self.readSettings()
-        self.scanUnit = Scanner(float(self.scanInc))
+        self.scanUnit = Scanner(float(self.scanInc), self.floor, self.ceiling)
 
         self.frames["ControlMenu"] .posTxt.configure(
             text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
@@ -162,7 +162,7 @@ class PCScanController(tk.Tk):
                 self.frames["ControlMenu"].posTxt.configure(
                     text=str(self.scanUnit.currentPosition) + " " + self.scanUnit.currentUnits)
                 self.enableControlButtons()
-                return 
+                return
              # print "Active threads"+ str(threading.enumerate())
             time.sleep(.1)
     """
@@ -191,7 +191,7 @@ class PCScanController(tk.Tk):
                 print "Stopping thread"
                 return True
             else:
-                return False 
+                return False
         elif direction == "Reverse":
             if position <= self.floor:
                 print "Instrument floor exceeded"
@@ -199,7 +199,6 @@ class PCScanController(tk.Tk):
                 return True
             else:
                 return False
-                    
 
     #--------------Control Menu-----------------------------------------------
     def bindControlMenu(self):
@@ -279,7 +278,7 @@ class PCScanController(tk.Tk):
                 print "Stopping thread"
                 self.moveThread.move_run = False
                 self.moveThread.join()
-                self.scanUnit.stop()        
+                self.scanUnit.stop()
             self.scanUnit.jogForward()
             self.moveThread = threading.Thread(
                 target=lambda: self.movePosition("Forward"))
@@ -303,7 +302,7 @@ class PCScanController(tk.Tk):
                 print "Stopping thread"
                 self.moveThread.move_run = False
                 self.moveThread.join()
-                self.scanUnit.stop()   
+                self.scanUnit.stop()
             self.moveThread = threading.Thread(
                 target=lambda: self.movePosition("Reverse"))
             self.disableControlButtons()
@@ -345,7 +344,13 @@ class PCScanController(tk.Tk):
 
         def getSlewPos():
             position = float(dialogWindow.textEntry.get())
-            self.scanUnit.slew(position)
+            if position > self.floor and position < self.ceiling:
+                
+                self.scanUnit.slew(position)
+            else:    
+                print self.floor
+                print self.ceiling
+                print "Entered position is now outside of bounds"
             dialogWindow.destroy()
         dialogWindow.yesButton.configure(
             command=lambda: getSlewPos())
@@ -446,9 +451,9 @@ class PCScanController(tk.Tk):
 
     def save(self):
         if self.saveFlag == 1:
-
+            print "Saving...."
             self.fileName = tkFileDialog.asksaveasfilename(
-                initialdir="/", title="Select save file or cancel.", filetypes=((".csv files", "*.csv"), ("all files", "*.*")))
+                initialdir=".", title="Select save file or cancel.", filetypes=((".csv files", "*.csv"), ("all files", "*.*")))
             if self.fileName is not None:
                 self.session.saveSession(
                     self.fileName, self.scanUnit.currentUnits)
@@ -476,7 +481,7 @@ class PCScanController(tk.Tk):
         for value in self.gainDict.keys():
             self.frames["ConfigureMenu"].gainDropDown.children["menu"].add_command(
                 label=value, command=lambda gainValue=value: self.setGain(gainValue))
-        
+
         self.frames["ConfigureMenu"].startPosBut.configure(
             command=self.setStartPos)
         self.frames["ConfigureMenu"].bind(self.configKeys[self.frames[

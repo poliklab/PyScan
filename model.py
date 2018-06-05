@@ -70,10 +70,10 @@ class SerialInterface(object):
 
 class Scanner(object):
 
-    def __init__(self, interval):
+    def __init__(self, interval,  floor, ceiling):
         # TODO: Set floor and ceiling in a setting file
-        self.floor = 14975 
-        self.ceiling = 16000
+        self.floor = floor 
+        self.ceiling = ceiling
         self.interval = interval
         self.serialInterface = SerialInterface()
         self.ack() # Get info from instument to intailize Scanner object 
@@ -93,6 +93,8 @@ class Scanner(object):
             self.serialInterface.execute("9:" + str(position))
             self.updateStatus()
         else:
+            print self.floor
+            print self.ceiling
             print "Slew position out of bounds"
             return
 
