@@ -396,7 +396,7 @@ class PCScanController(tk.Tk):
             else:    
                 print self.floor
                 print self.ceiling
-                print "Entered position is now outside of bounds"
+                print "Entered position is outside of bounds"
            
 
         dialogWindow.yesButton.configure(
